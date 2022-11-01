@@ -1,6 +1,6 @@
 export default function LogUser(req, res) {
     fetch(("http://localhost:4898/api/users/login"),{
-        method: "post",
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(req.body)
     })

@@ -8,7 +8,10 @@ let Theme = createTheme({
             dark: "#26160C"
         },
         secondary: {
-            main: "#C0C0C0",
+            main: "#FFFFFF",
+            dark: "#C0C0C0",
+            light: "#F0F0F2"
+
             
         },
         success: {
@@ -19,23 +22,56 @@ let Theme = createTheme({
         }
     },
     typography: {
+        h5: {
+            color: "white",
+        },
         h6: {
             fontSize: "2.5vh",
-            fontWeight: "5vh"
+            fontWeight: "5vh",
         },
         h7: {
             fontSize: "2vh",
-            fontWeight: "5vh"
+            fontWeight: "5vh",
         },
         h8: {
             fontSize: "1.5vh",
-            fontWeight: "5vh"
+            fontWeight: "5vh",
         },
         subtitle1:{
-            fontSize: "1.2vh"
+            fontSize: "1.2vh",
         },
         subtitle2: {
-
+        },
+        warning: {
+            color: "#cc3300",
+            fontSize: "1.8vh"
+        }
+    },
+    components: {
+        MuiListItemButton: {
+            styleOverrides: {
+                root: {
+                    "&.Mui-selected": {
+                        backgroundColor: "#26160C"
+                    }
+                }
+            }
+        },
+        MuiListItemText: {
+            styleOverrides: {
+                root: {
+                    display: "inline-flex",
+                    flexDirection: "row-reverse",
+                    justifyContent: "space-evenly",
+                }
+            }
+        },
+        MuiSelect: {
+            styleOverrides: {
+                icon: {
+                    fill: "white",
+                }
+            }
         }
     }
 })

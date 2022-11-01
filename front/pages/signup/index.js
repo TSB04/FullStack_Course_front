@@ -7,15 +7,10 @@ import axios from "axios"
 
 
 const myStyle = {
-    paper: {
-        backgroundImage: `url(${bgImage.src})`,
-        width: '212,1vh',
-        height: '100vh'
-    },
     gridConatiner: {
-        backgroundColor: Theme.palette.primary.light,
+        backgroundColor: Theme.palette.secondary.light,
         borderRadius: "8px",
-        marginTop: "2%",
+        margin: "6% 0",
         padding: "1%"
     },
 }
@@ -25,34 +20,123 @@ const myStyle = {
 
 function Signup () {
 
-    const [fname, setFName] = useState("")
-    const [lname, setLName] = useState("")
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [confirmPw, setConfirmPw] = useState("")
+    // const [fName, setFName] = useState("")
+    // const [lName, setLName] = useState("")
+    // const [email, setEmail] = useState("")
+    // const [password, setPassword] = useState("")
     const [formValid, setFormValid] = useState(false)
-
-    const Submit = () => {
-        if (password === confirmPw) {
-            setFormValid(true)
-        } else {
-            setFormValid(false)
+    const [handleInputs, setHandleInputs] = useState({
+        fName:{
+            input: "",
+            helperText: "Please enter your first name",
+            error: false
+        },
+        lName:{
+            input: "",
+            helperText: "Please enter your last name",
+            error: false
+        },
+        email:{
+            input: "",
+            helperText: "Please enter your email",
+            error: false
+        },
+        password:{
+            input: "",
+            helperText: "Please enter your password",
+            error: false
+        },
+        confirmPasswrd:{
+            input: "",
+            helperText: "Please repeat your password",
+            error: true
         }
+    })
+
+    const handleConfirmPassword = (e) => {
+        setFormValid(false)
+        if (handleInputs.password.input === e.target.value) {
+            setFormValid(true)
+            setHandleInputs(prevState => ({
+                ...prevState, confirmPasswrd: {
+                    input: e.target.value,
+                    helperText: "",
+                    error: false
+                }
+            }))
+        } else if (handleInputs.password.input !== e.target.value) {
+            setFormValid(false)
+            setHandleInputs(prevState => ({
+                ...prevState, confirmPasswrd: {
+                    input: e.target.value,
+                    helperText: "the entered value differs from the password",
+                    error: true
+                }
+            }))
+        }
+    }
+
+    const handleChange = (e) => {
+        setFormValid(false)
+        const {name, value} = e.target
+        setHandleInputs(prevState => ({
+            ...prevState, [name]: {
+                input: value,
+                // helperText: prevState.name.helperText,
+                error: false
+            }
+        }))
     }
         
 
     const handleSubmit = async (event) => {
         event.preventDefault()
-        const formData = {
-            fname, lname, email, password
+
+         const formData = {
+            fname: handleInputs.fName.input,
+            lName: handleInputs.lName.input,
+            email: handleInputs.email.input,
+            password: handleInputs.password.input
         }
+        console.log(handleInputs)
         try {
             const { data } = await axios({
                 method: "POST",
                 url: "/api/signin",
                 data: formData
             })
-            console.log({data})
+            if (data.message) {
+                window.alert(data.message)
+                window.location.replace('/login')
+            } else if(data.email) {
+                setHandleInputs(prevState =>({
+                    ...prevState, email :{
+                        input: prevState.email.input,
+                        helperText: data.email.message,
+                        error: true
+                    }
+                }))
+            } else if(data.password) {
+                setHandleInputs(prevState =>({
+                    ...prevState, password :{
+                        input: prevState.password.input,
+                        helperText: data.password.message,
+                        error: true
+                    }
+                }))
+            } else if(data.error) {
+                if(data.error.code) {
+                    document.getElementById("error").innerHTML = "You already have an account, please login or reset your password if you have forgotten it"
+                } else if(data.error.message) {
+                     document.getElementById("error").innerHTML = 
+                    "Password must be between 6 and 16 characters long, must contain upper case letters, lower case letters, numbers and must not contain spaces, symbols or successive characters."
+                    console.log(data)
+    
+                }
+            }
+                
+                
+            
         } catch (err) {
             console.log({error: err})
         }
@@ -60,7 +144,7 @@ function Signup () {
     
     return (
 
-        <Grid2 container xs md={4} mdOffset={3} rowGap={2} sx={myStyle.gridConatiner} 
+        <Grid2 container xs md={4} mdOffset={-2} rowGap={2} sx={myStyle.gridConatiner} 
             justifyContent="space-evenly" alignItems="center" direction="column"
         >
             <Grid item>
@@ -73,11 +157,12 @@ function Signup () {
                     size="small"
                     fullWidth
                     type="input"
-                    helperText={!fname && "Please enter your first name"}
                     id="demo-helper-text-aligned"
-                    label="Firstname"
-                    name="fname" 
-                    onChange={ e => setFName(e.target.value)}
+                    label="First name"
+                    name="fName"
+                    error={handleInputs.fName.error}
+                    helperText={handleInputs.fName.helperText}
+                    onBlur={handleChange}
                 />
             </Grid>
             <Grid item width="80%">
@@ -85,11 +170,12 @@ function Signup () {
                     size="small"
                     fullWidth
                     type="input"
-                    helperText={!lname && "Please enter your last name"}
                     id="demo-helper-text-aligned"
-                    label="Lastname"
-                    name="lname" 
-                    onChange={ e => setLName(e.target.value)}
+                    label="Last name"
+                    name="lName"
+                    error={handleInputs.lName.error}
+                    helperText={handleInputs.lName.helperText}
+                    onBlur={handleChange}
                 />
             </Grid>
             <Grid item width="80%">
@@ -97,12 +183,13 @@ function Signup () {
                     size="small"
                     fullWidth
                     required
-                    helperText={!email && "Please enter your email"}
                     id="demo-helper-text-aligned"
                     label="email"
                     name="email"
-                    type="email" 
-                    onChange={ e => setEmail(e.target.value)}
+                    type="email"
+                    error={handleInputs.email.error}
+                    helperText={handleInputs.email.helperText}
+                    onBlur={ handleChange}
                 />
             </Grid>
             <Grid item width="80%">
@@ -111,33 +198,37 @@ function Signup () {
                     fullWidth
                     required
                     type="password"
-                    helperText={!password && "Please enter your password"}
                     id="demo-helper-text-aligned"
                     label="Password"
                     name="password" 
-                    onChange={ e => setPassword(e.target.value)}
+                    error={handleInputs.password.error}
+                    helperText={handleInputs.password.helperText}
+                    onChange={handleChange}
                 />
             </Grid>
-            {password && 
+            {handleInputs.password.input && 
                 <Grid item width="80%">
                     <TextField
                         size="small"
                         fullWidth
                         required
                         type="password"
-                        helperText={!formValid && "The confirm password doesn't match with password"}
                         id="demo-helper-text-aligned"
                         label="Confirm password"
-                        name="confirm_password" 
-                        onChange={e => setConfirmPw(e.target.value)}
-                        onBlur={Submit}
+                        name="confirm_password"
+                        error={handleInputs.confirmPasswrd.error}
+                        helperText={handleInputs.confirmPasswrd.helperText}
+                        onChange={handleConfirmPassword}
                     />
                 </Grid>
             }
             <Grid item>
                 <Button disabled={!formValid} variant="contained" type="submit" onClick={handleSubmit} > Sign up </Button>
             </Grid>
-             
+            <Typography id="errorEmail"  variant="warning"/>
+            <Typography id="errorPassword"  variant="warning"/>
+            <Typography id="error"  variant="warning" textAlign="center"/>
+
         </Grid2>
     )
 }

@@ -1,6 +1,5 @@
-
-export default function CreateUser(req, res) {
-    fetch(("http://localhost:4898/api/users/signup"),{
+export default function LogUser(req, res) {
+    fetch(("http://localhost:4898/api/books/sheet"),{
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(req.body)

@@ -9,36 +9,37 @@ import { useEffect, useState } from "react"
 const myStyle = {
 	header: {
 		height: "8vh",
-		border: "solid tomato 5px"
 	},
 	globalContainer: {
 		backgroundImage: `url(${bgImage.src})`,
 		width: "212,1vh",
 		height: "92vh",
 	},
-	main:{
-		padding: "1% 0 0 0",
+	aside:{
+		padding: "2% 0 0 1%"
 	}
 }
 
-
 const Layout = ({ children }) => {
 
-	const [userBar, setUserBar] = useState()
+		
+
+	const [userBar, setUserBar] = useState(null)
+	
 	return (
 		<>
 			<Grid sx={myStyle.header}>
 				<Header/>
 			</Grid>
 			<Grid container sx={myStyle.globalContainer}>
-				<Grid item xs={1.5}>
+				<Grid item xs={1.6} sx={myStyle.aside} alignItems="center">
 					{typeof window !== "undefined" && window.location.pathname !== "/login" && window.location.pathname !== "/signup" && 
 						useEffect(()=> {setUserBar(<UserBar/>)}, [])
 					}
 					{userBar}
 				</Grid>
-				<Grid item xs={10.5} component="main" sx={myStyle.main}>
-						{ children }
+				<Grid container item xs={10.4} component="main" justifyContent="center">
+					{ children }
 				</Grid>
 			</Grid>		
 		</>

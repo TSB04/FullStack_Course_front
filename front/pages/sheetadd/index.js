@@ -1,77 +1,99 @@
 import React, { useState } from "react"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
-import { Grid, TextField, Typography, Button } from "@mui/material"
-import bgImage from "../../public/book image/livres-a-lire-CRPE-2022.jpg"
+import { Grid, TextField, Typography, Button, Link } from "@mui/material"
 import axios from "axios"
 
 
 const myStyle = {
-    paper: {
-        backgroundImage: `url(${bgImage.src})`,
-        width: '212,1vh',
-        height: '100vh'
-    },
     gridConatiner: {
         backgroundColor: "#F0F0F2",
         borderRadius: "8px",
-        marginTop: "3%",
+        margin: "2% 15% 4% 0",
         padding: "2%",
     },
 }
 
-
-
-
 function AddSheet () {
 
-    const [isbn, setIsbn] = useState("")
-    const [title, setTitle] = useState("")
-    const [desc, setDesc] = useState("")
-    const [author, setAuthor] = useState("")
-    const [genre, setGenre] = useState("")
-    const [pbDate, setPbDate] = useState("")
-    const [nbPage, setNbPage] = useState("")
-    const [price, setPrice] = useState("")
-    const [bkInStck, setBkInStck] = useState("")
+    const [helperText, setHelperText] = useState({
+        isbn:"Please enter the book's isbn",
+        title: "Please enter the book's title",
+        desc: "Please enter the book's description",
+        author: "Please enter the book's author",
+        genre: "Please enter the book's genre",
+        pbDate: "Please enter the book's publication date",
+        nbPage: "Please enter the number of book pages",
+        price: "Please enter the book's price",
+        bkInStck: "Please enter the number of books in your stock"
+    })
 
-    const [formValid, setFormValid] = useState(false)
+    const [error, setError] = useState({
+        isbn: false,
+        title: false,
+        desc: false,
+        author: false,
+        genre: false,
+        pbDate: false,
+        nbPage: false,
+        price: false,
+        bkInStck: false,
+    })
+    
+    const [inputs, setInputs] = useState({
+        isbn: "",
+        title: "",
+        desc: "",
+        author: "",
+        genre: "",
+        pbDate: "",
+        nbPage: "",
+        price: "",
+        bkInStck: ""
+    })
 
-    const Submit = () => {
-        if (password === confirmPw) {
-            setFormValid(true)
-        } else {
-            setFormValid(false)
-        }
+    const [error0, setError0] = useState("")
+
+    const handleChange = e => {
+        const { name, value } = e.target;
+        setInputs(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
     }
-        
 
     const handleSubmit = async (event) => {
         event.preventDefault()
-        const formData = {
-            isbn, title, desc, author, genre, pbDate, nbPage, price, bkInStck
-        }
-        console.log(formData)
+        console.log("hello")
         try {
             const { data } = await axios({
                 method: "POST",
                 url: "/api/addsheet",
-                data: formData
+                data: inputs
             })
+            setError0("")
             if (data.message) {
                 window.alert(data.message)
                 window.location.replace('/')
-                console.log(data)
-            } else {
-                document.getElementById("test").innerHTML = data.error
-            }
+            } else if (data.error === 0) {
+                setError0("You must log in to create a sheet !!")
+            } else if(data) {
+
+                //...working in progress, all inputs must behave this way without repeating this code each time
+                if(data.isbn) {
+                    setHelperText({...helperText, isbn: data.isbn.message})
+                    setError({...error, isbn: true})
+                } else {
+                    setHelperText({...helperText, isbn: null})
+                    setError({...error, isbn: false})
+                }
+            }        
         } catch (err) {
             console.log({error: err})
         }
     }
     
     return (
-
-        <Grid2 container md={10} mdOffset={0.8} rowGap={4} sx={myStyle.gridConatiner} 
+        <Grid2 container xs md={8} mdOffset={0.8} rowGap={1} sx={myStyle.gridConatiner} 
             justifyContent="space-evenly" alignItems="center" direction="column"
         >
             <Grid item>
@@ -81,7 +103,7 @@ function AddSheet () {
             </Grid>
 
             <Grid container  rowGap={3} >
-                <Grid container direction="row" justifyContent="space-between" alignItems="center">
+                <Grid container direction="row" justifyContent="space-evenly" alignItems="center">
                     <Grid >
                         <TextField
                             required
@@ -89,8 +111,10 @@ function AddSheet () {
                             type="input"
                             id="demo-helper-text-aligned"
                             label="isbn"
-                            name="isbn" 
-                            onChange={ e => setIsbn(e.target.value)}
+                            name="isbn"
+                            error={error.isbn}
+                            helperText={helperText.isbn} 
+                            onBlur={handleChange}
                         />
                     </Grid>
                     <Grid >
@@ -101,24 +125,11 @@ function AddSheet () {
                             id="demo-helper-text-aligned"
                             label="Title"
                             name="title" 
-                            onChange={ e => setTitle(e.target.value)}
+                            error={error.title}
+                            helperText={helperText.title} 
+                            onBlur={handleChange}
                         />
                     </Grid>
-                    <Grid >
-                        <TextField
-                            fullWidth
-                            required
-                            id="demo-helper-text-aligned"
-                            label="Description"
-                            name="description"
-                            type="input" 
-                            onChange={ e => setDesc(e.target.value)}
-                        />
-                    </Grid>
-                </Grid>
-
-
-                <Grid container direction="row" justifyContent="space-between" alignItems="center">
                     <Grid >
                         <TextField
                             required
@@ -127,10 +138,16 @@ function AddSheet () {
                             id="demo-helper-text-aligned"
                             label="Author"
                             name="author" 
-                            onChange={ e => setAuthor(e.target.value)}
+                            error={error.author}
+                            helperText={helperText.author} 
+                            onChange={handleChange}
                         />
                     </Grid>
-                    <Grid >
+                </Grid>
+
+                    
+                <Grid container direction="row" justifyContent="space-evenly" alignItems="center">
+                    <Grid>
                         <TextField
                             required
                             fullWidth
@@ -138,7 +155,22 @@ function AddSheet () {
                             id="demo-helper-text-aligned"
                             label="Genre"
                             name="genre" 
-                            onChange={ e => setGenre(e.target.value)}
+                            error={error.genre}
+                            helperText={helperText.genre} 
+                            onBlur={handleChange}
+                        />
+                    </Grid>
+                    <Grid >
+                        <TextField
+                            fullWidth
+                            required
+                            type="input"
+                            id="demo-helper-text-aligned"
+                            label="Number of pages"
+                            name="nbPage"
+                            error={error.nbPage}
+                            helperText={helperText.nbPage}  
+                            onBlur={handleChange}
                         />
                     </Grid>
                     <Grid >
@@ -148,26 +180,17 @@ function AddSheet () {
                             required
                             id="demo-helper-text-aligned"
                             label="Publication date"
-                            name="publication date"
-                            type="date" 
-                            onChange={ e => setPbDate(e.target.value)}
+                            name="pbDate"
+                            type="date"
+                            error={error.pbDate}
+                            helperText={helperText.pbDate}  
+                            onBlur={handleChange}
                         />
                     </Grid>
                 </Grid>
 
 
-                <Grid container direction="row" justifyContent="space-between" alignItems="center"  >
-                    <Grid >
-                        <TextField
-                            fullWidth
-                            required
-                            type="input"
-                            id="demo-helper-text-aligned"
-                            label="Number of pages"
-                            name="number of pages" 
-                            onChange={ e => setNbPage(e.target.value)}
-                        />
-                    </Grid>
+                <Grid container direction="row" justifyContent="space-evenly" alignItems="center"  >
                     <Grid >
                         <TextField
                             required
@@ -175,8 +198,10 @@ function AddSheet () {
                             type="input"
                             id="demo-helper-text-aligned"
                             label="Price"
-                            name="price" 
-                            onChange={ e => setPrice(e.target.value)}
+                            name="price"
+                            error={error.price} 
+                            helperText={helperText.price} 
+                            onBlur={handleChange}
                         />
                     </Grid>
                     <Grid >
@@ -185,20 +210,38 @@ function AddSheet () {
                             required
                             id="demo-helper-text-aligned"
                             label="Book in stock"
-                            name="book in stock"
-                            type="input" 
-                            onChange={ e => setBkInStck(e.target.value)}
+                            name="bkInStck"
+                            type="input"
+                            error={error.bkInStck}
+                            helperText={helperText.bkInStck}  
+                            onBlur={handleChange}
                         />
                     </Grid>
                 </Grid>
-            </Grid>
+            </Grid> 
+             <Grid2 md={7} marginTop="2vh">
+                <TextField
+                    multiline
+                    required
+                    fullWidth
+                    id="outlined-multiline-static"
+                    label="Description"
+                    name="desc"
+                    error={error.desc}
+                    helperText={helperText.desc} 
+                    onBlur={handleChange}
+                />
+            </Grid2>
 
             <Grid item>
                 <Button  variant="contained" type="submit" onClick={handleSubmit} > Create sheet </Button>
             </Grid> 
              
-             <Typography id="test"></Typography>
+            <Link href="/login" underline="hover" color="primary">
+                <Typography color="primary">{error0}</Typography>
+            </Link> 
         </Grid2>
+    
     )
 }
 export default AddSheet

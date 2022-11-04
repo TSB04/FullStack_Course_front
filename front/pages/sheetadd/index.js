@@ -8,14 +8,15 @@ const myStyle = {
     gridConatiner: {
         backgroundColor: "#F0F0F2",
         borderRadius: "8px",
-        margin: "2% 15% 4% 0",
-        padding: "2%",
+        padding: "0.5% 0",
+        height: "max-content",
+        marginTop: "1%"
     },
 }
 
 function AddSheet () {
 
-    const [helperText, setHelperText] = useState({
+    const [helperText, setHelperText] = React.useState({
         isbn:"Please enter the book's isbn",
         title: "Please enter the book's title",
         desc: "Please enter the book's description",
@@ -24,10 +25,10 @@ function AddSheet () {
         pbDate: "Please enter the book's publication date",
         nbPage: "Please enter the number of book pages",
         price: "Please enter the book's price",
-        bkInStck: "Please enter the number of books in your stock"
+        bkInStck: "Please enter the number of books in stock"
     })
 
-    const [error, setError] = useState({
+    const [error, setError] = React.useState({
         isbn: false,
         title: false,
         desc: false,
@@ -39,7 +40,7 @@ function AddSheet () {
         bkInStck: false,
     })
     
-    const [inputs, setInputs] = useState({
+    const [inputs, setInputs] = React.useState({
         isbn: "",
         title: "",
         desc: "",
@@ -51,7 +52,7 @@ function AddSheet () {
         bkInStck: ""
     })
 
-    const [error0, setError0] = useState("")
+    const [error0, setError0] = React.useState("")
 
     const handleChange = e => {
         const { name, value } = e.target;
@@ -63,7 +64,6 @@ function AddSheet () {
 
     const handleSubmit = async (event) => {
         event.preventDefault()
-        console.log("hello")
         try {
             const { data } = await axios({
                 method: "POST",
@@ -93,7 +93,7 @@ function AddSheet () {
     }
     
     return (
-        <Grid2 container xs md={8} mdOffset={0.8} rowGap={1} sx={myStyle.gridConatiner} 
+        <Grid2 container xs md={9} mdOffset={-1} rowGap={1} sx={myStyle.gridConatiner} 
             justifyContent="space-evenly" alignItems="center" direction="column"
         >
             <Grid item>
@@ -219,11 +219,12 @@ function AddSheet () {
                     </Grid>
                 </Grid>
             </Grid> 
-             <Grid2 md={7} marginTop="2vh">
+             <Grid2 container xs md={8.5} maxHeight="30vh"  marginTop="2vh" >
                 <TextField
                     multiline
                     required
-                    fullWidth
+                    maxRows={8}
+                    sx={{width: "100%", height: "80%"}}
                     id="outlined-multiline-static"
                     label="Description"
                     name="desc"
@@ -234,7 +235,7 @@ function AddSheet () {
             </Grid2>
 
             <Grid item>
-                <Button  variant="contained" type="submit" onClick={handleSubmit} > Create sheet </Button>
+                <Button  variant="contained" type="submit"  onClick={handleSubmit} > Create sheet </Button>
             </Grid> 
              
             <Link href="/login" underline="hover" color="primary">

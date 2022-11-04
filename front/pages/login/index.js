@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import * as React from "react"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { Grid, TextField, Typography, Button, Link } from "@mui/material"
 import Theme from "../../theme/Theme"
@@ -10,17 +10,18 @@ const myStyle = {
         backgroundColor: Theme.palette.secondary.light,
         borderRadius: "8px",
         padding: "2%",
-        margin: "5% 0 15% 0"
+        height: "80%",
+        marginTop: "3%"
     },
 }
 
 
 function Login () {
 
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [error, setError] = useState(null)
-    const [handleInputs, setHandleInputs] = useState({
+    const [email, setEmail] = React.useState("")
+    const [password, setPassword] = React.useState("")
+    const [error, setError] = React.useState(null)
+    const [handleInputs, setHandleInputs] = React.useState({
         email: {
             helperText: "Please enter your email",
             error: false
@@ -43,12 +44,13 @@ function Login () {
             })
             if (data) {
                 if (data.message) {
-                    let jwt = data.token
-                    const cookies = new Cookies()
-                    cookies.set('jwt', jwt, { path: '/' })
-                    localStorage.setItem("fname", data.fName)
+                    const cookie = new Cookies
+                    cookie.set("jwt", data.token)
+                    sessionStorage.setItem("jwt", data.token)
+                    sessionStorage.setItem("fname", data.fName)
                     sessionStorage.setItem("lname", data.lName)
-                    localStorage.setItem("userPrvlge", data.isAdmin)
+                    sessionStorage.setItem("userPrvlge", data.isAdmin)
+                    sessionStorage.setItem("userId", data.userId)
                     window.alert("welcome "+data.fName+""+data.lName)
                     window.location.replace('/')
                 } else if (!data.email && data.password) {
@@ -112,7 +114,7 @@ function Login () {
         }
     }
     return (
-        <Grid2 container xs md={4} mdOffset={-2} direction="column" justifyContent="space-evenly" alignItems="center" rowGap={2} sx={myStyle.gridConatiner}>
+        <Grid2 container md={4} mdOffset={-2} direction="column" justifyContent="space-evenly" alignItems="center" rowGap={2} sx={myStyle.gridConatiner}>
             <Grid item>
                 <Typography variant="h3" >
                     Log in

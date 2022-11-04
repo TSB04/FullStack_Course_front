@@ -1,8 +1,7 @@
-import React, { useState } from "react"
+import * as React from "react"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { Grid, TextField, Typography, Button } from "@mui/material"
 import Theme from "../../theme/Theme"
-import bgImage from "../../public/book image/livres-a-lire-CRPE-2022.jpg"
 import axios from "axios"
 
 
@@ -10,8 +9,8 @@ const myStyle = {
     gridConatiner: {
         backgroundColor: Theme.palette.secondary.light,
         borderRadius: "8px",
-        margin: "6% 0",
-        padding: "1%"
+        height: "max-content",
+        marginTop: "2%"
     },
 }
 
@@ -20,12 +19,8 @@ const myStyle = {
 
 function Signup () {
 
-    // const [fName, setFName] = useState("")
-    // const [lName, setLName] = useState("")
-    // const [email, setEmail] = useState("")
-    // const [password, setPassword] = useState("")
-    const [formValid, setFormValid] = useState(false)
-    const [handleInputs, setHandleInputs] = useState({
+    const [formValid, setFormValid] = React.useState(false)
+    const [handleInputs, setHandleInputs] = React.useState({
         fName:{
             input: "",
             helperText: "Please enter your first name",
@@ -98,7 +93,6 @@ function Signup () {
             email: handleInputs.email.input,
             password: handleInputs.password.input
         }
-        console.log(handleInputs)
         try {
             const { data } = await axios({
                 method: "POST",
@@ -130,8 +124,6 @@ function Signup () {
                 } else if(data.error.message) {
                      document.getElementById("error").innerHTML = 
                     "Password must be between 6 and 16 characters long, must contain upper case letters, lower case letters, numbers and must not contain spaces, symbols or successive characters."
-                    console.log(data)
-    
                 }
             }
                 
@@ -144,7 +136,7 @@ function Signup () {
     
     return (
 
-        <Grid2 container xs md={4} mdOffset={-2} rowGap={2} sx={myStyle.gridConatiner} 
+        <Grid2 container xs md={4} mdOffset={-2} rowGap={2}  sx={myStyle.gridConatiner} 
             justifyContent="space-evenly" alignItems="center" direction="column"
         >
             <Grid item>
@@ -225,10 +217,7 @@ function Signup () {
             <Grid item>
                 <Button disabled={!formValid} variant="contained" type="submit" onClick={handleSubmit} > Sign up </Button>
             </Grid>
-            <Typography id="errorEmail"  variant="warning"/>
-            <Typography id="errorPassword"  variant="warning"/>
             <Typography id="error"  variant="warning" textAlign="center"/>
-
         </Grid2>
     )
 }

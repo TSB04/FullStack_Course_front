@@ -1,7 +1,6 @@
 import * as React from "react"
-import {useState} from "react"
-import { Typography, Avatar, Grid, List, IconButton, ListItemButton, ListItemText, Button } from "@mui/material"
-import { PowerSettingsNew, AutoStories, Settings, PersonPin, LibraryAdd } from '@mui/icons-material'
+import { Typography, Avatar, Grid, List, ListItemButton, ListItemText } from "@mui/material"
+import { AutoStories, Settings, PersonPin, LibraryAdd } from '@mui/icons-material'
 import Link from "next/link"
 import Theme from "../../theme/Theme"
 
@@ -36,14 +35,14 @@ const myStyle = {
 
 
 
-function UserBar () {
-    const [selected, setSelected] = useState(0)
+const UserBar = () => {
+    const [selected, setSelected] = React.useState(0)
     
         return (
             <Grid container direction="column"  sx={myStyle.container}>
                 <Grid item xs={4} component="div" sx={myStyle.avatarContainer}>
                     <Avatar alt="User Nom" src=""  sx={myStyle.avatarContainer.avatar}/>
-                    <Typography variant="h5">{localStorage.getItem("fname")}</Typography>
+                    <Typography variant="h5">{sessionStorage.getItem("fname")}</Typography>
                 </Grid>
                 <div style={myStyle.border}/>
                 <Grid item xs={5.90} >
@@ -85,12 +84,6 @@ function UserBar () {
                         </ListItemButton>
                     </List>
                 </Grid>
-                {/* <div style={myStyle.border}/>
-                <Grid item xs={2} >
-                    <IconButton sx={myStyle.logout} >
-                        <PowerSettingsNew variant="contained" color="secondary" sx={myStyle.logout.button}/>
-                    </IconButton>
-                </Grid> */}
             </Grid>
         )
 }   

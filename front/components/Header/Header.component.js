@@ -1,21 +1,22 @@
 import * as React from "react"
-import { useState } from "react"
+import Image from "next/image"
 import axios from "axios"
 import { AppBar, Grid, IconButton, Link, Paper} from "@mui/material"
 import Cookies from "universal-cookie"
 import { styled, alpha } from '@mui/material/styles'
 import InputBase from '@mui/material/InputBase'
 import SearchIcon from '@mui/icons-material/Search'
-import { Logout } from "@mui/icons-material"
+import { Logout, Login } from "@mui/icons-material"
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import BookCard from "../Card/Card.component"
 import Theme from "../../theme/Theme"
+import Logo from "../../public/logo1.png"
 
 const myStyle = {
     background: "linear-gradient(9deg, rgba(38,22,12,1) 0%, rgba(66,53,46,1) 50%, rgba(95,48,19,1) 100%)",
-    height: "8%",
-    padding: "0.3%  2% 0 2%",
+    height: "9%",
+    padding: "0 2%",
     popup: {
         position: "absolute",
         top: "100%",
@@ -81,19 +82,25 @@ const SelectWrapper = styled('div')(({theme}) => ({
 }))
 
 const handleLogout = () => {
-    localStorage.clear()
-    const cookie = new Cookies()
+    const cookie = new Cookies
     cookie.remove("jwt")
+    sessionStorage.clear()
 }
 
+const Header = () => {
+    const [field,setField] = React.useState("")
+    const [found, setFound] = React.useState()
+    const [isLogged, setIsLogged] = React.useState(false)
 
+    React.useEffect(() => {
+        const session = sessionStorage.length
+        if(session >= 3) {
+            setIsLogged(true)
+        }
+    }, [])
 
-function Header() {
-    const [field,setField] = useState("")
-    const [found, setFound] = useState(null)
     const handleSearch = async (e) => {
         const test = e.target.value
-        // console.log({[field]: test})
         const param = {[field]: test}
         try {
             const { data } = await axios ({
@@ -101,7 +108,6 @@ function Header() {
                 url: "/api/getsheet",
                 data: param
             })
-            console.log(data)
             setFound(data)
         } catch (err) {
             console.log({error: err})
@@ -112,9 +118,11 @@ function Header() {
         <AppBar sx={myStyle}>
             <Grid container justifyContent="space-between" alignItems="center">
                 <Grid item alignContent="center">
-                    <Link>
-                        LOGO
-                    </Link>
+                    <IconButton size="small">
+                        <Link href="/">
+                            <Image src={Logo} height="50%" width="55%"/>
+                        </Link>
+                    </IconButton>
                 </Grid>
                 <Grid item >
                     <Search>
@@ -133,12 +141,13 @@ function Header() {
                                 sx={{height:"5.5vh"}}
                                 onChange={e =>setField(e.target.value)}                                
                             >
-                                <MenuItem value="">
-                                    <em>None</em>
-                                </MenuItem>
                                 <MenuItem value={"title"}>Title</MenuItem>
                                 <MenuItem value={"genre"}>Genre</MenuItem>
-                                <MenuItem>test</MenuItem>
+                                <MenuItem value={"author"}>Author</MenuItem>
+                                <MenuItem value={"pbDate"}>Publication Date</MenuItem>
+                                <MenuItem value={"price"}>price</MenuItem>
+
+
                             </Select>
                         </SelectWrapper> 
                     </Search>
@@ -153,10 +162,8 @@ function Header() {
                 <Grid item>
                     <Link href="/login">
                         <IconButton onClick={handleLogout}>
-                            {/* {UserLogged(isLogged) && isLogged === false && 
-                                <Login fontSize="large" color="red" />
-                            }*/}
-                                <Logout fontSize="large" color="secondary"/>
+                            {isLogged === false && <Login fontSize="large"/>}
+                            {isLogged === true && <Logout fontSize="large"/>}
                         </IconButton>
                     </Link>
                 </Grid>

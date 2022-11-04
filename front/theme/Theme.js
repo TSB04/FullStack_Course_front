@@ -37,6 +37,10 @@ let Theme = createTheme({
             fontSize: "1.5vh",
             fontWeight: "5vh",
         },
+        body2: {
+            fontSize: "3vh",
+            fontWeight: "5vh",
+        },
         subtitle1:{
             fontSize: "1.2vh",
         },
@@ -70,6 +74,24 @@ let Theme = createTheme({
             styleOverrides: {
                 icon: {
                     fill: "white",
+                }
+            }
+        },
+        MuiIconButton: {
+            styleOverrides: {
+                root: {
+                    color: "white",
+                    "&:hover": {
+                        backgroundColor: "#26160C"
+                    }
+                }
+            }
+        },
+        MuiTextField: {
+            styleOverrides: {
+                root: {
+                    width: "40vh",
+                    height: "10vh"
                 }
             }
         }

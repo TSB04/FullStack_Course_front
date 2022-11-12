@@ -89,7 +89,7 @@ function Signup () {
 
          const formData = {
             fname: handleInputs.fName.input,
-            lName: handleInputs.lName.input,
+            lname: handleInputs.lName.input,
             email: handleInputs.email.input,
             password: handleInputs.password.input
         }

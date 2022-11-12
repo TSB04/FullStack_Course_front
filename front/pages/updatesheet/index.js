@@ -40,113 +40,124 @@ function UpdateSheet() {
     // })
     
 const [inputs, setInputs] = React.useState({
+    // grouping all the inputs params in the same const   
     isbn: {
         input: sessionStorage.getItem("isbn"),
         helperText: "The book's isbn cannot be change",
         error: false
     },
-    // title: {
-    //     input: sessionStorage.getItem("title"),
-    //     helperText: "Enter value to change the book's title",
-    //     error: false
-    // },
-    // desc: {
-    //     input: sessionStorage.getItem("desc"),
-    //     helperText: "Enter value to change the book's description",
-    //     error: false
-    // },
-    // author: {
-    //     input: sessionStorage.getItem("author"),
-    //     helperText: "Enter value to change the book's author",
-    //     error: false
-    // },
-    // genre: {
-    //     input: sessionStorage.getItem("genre"),
-    //     helperText: "Enter value to change the book's genre",
-    //     error: false
-    // },
-    // pbDate: {
-    //     input: sessionStorage.getItem("pbDate"),
-    //     helperText: "Enter value to change the book's publication date",
-    //     error: false
-    // },
-    // nbPage: {
-    //     input: sessionStorage.getItem("nbPage"),
-    //     helperText: "Enter value to change the number of book pages",
-    //     error: false
-    // },
-    // price: {
-    //     input: sessionStorage.getItem("price"),
-    //     helperText: "Enter value to change the book's price",
-    //     error: false
-    // },
-    // bkInStck: {
-    //     input: sessionStorage.getItem("bkInStck"),
-    //     helperText: "Enter value to change the number of books in your stock",
-    //     error: false
-    // }
+    title: {
+        input: sessionStorage.getItem("title"),
+        helperText: "Enter value to change the book's title",
+        error: false
+    },
+    desc: {
+        input: sessionStorage.getItem("desc"),
+        helperText: "Enter value to change the book's description",
+        error: false
+    },
+    author: {
+        input: sessionStorage.getItem("author"),
+        helperText: "Enter value to change the book's author",
+        error: false
+    },
+    genre: {
+        input: sessionStorage.getItem("genre"),
+        helperText: "Enter value to change the book's genre",
+        error: false
+    },
+    pbDate: {
+        input: sessionStorage.getItem("pbDate"),
+        helperText: "Enter value to change the book's publication date",
+        error: false
+    },
+    nbPage: {
+        input: sessionStorage.getItem("nbPage"),
+        helperText: "Enter value to change the number of book pages",
+        error: false
+    },
+    price: {
+        input: sessionStorage.getItem("price"),
+        helperText: "Enter value to change the book's price",
+        error: false
+    },
+    bkInStck: {
+        input: sessionStorage.getItem("bkInStck"),
+        helperText: "Enter value to change the number of books in your stock",
+        error: false
+    }
 })
+    // Get the sheet to update from back     
 
-    React.useEffect(() => {
-        const selectedCardIsbn = sessionStorage.getItem("isbn")
-        const param = {isbn: selectedCardIsbn}
-        const getCardToUpdate = async () => {
-            try {
-                const { data } = await axios ({
-                    method: "POST",
-                    url: "/api/getsheet",
-                    data: param
-                })
-                const  value = Object.values(data[0])
-                const name = Object.keys(data[0])
+    // React.useEffect(() => {
+    //     const selectedCardIsbn = sessionStorage.getItem("isbn")
+    //     const param = {isbn: selectedCardIsbn}
+    //     const getCardToUpdate = async () => {
+    //         try {
+    //             const { data } = await axios ({
+    //                 method: "POST",
+    //                 url: "/api/getsheet",
+    //                 data: param
+    //             })
+    //             const  values = Object.values(data[0])
+    //             const fields = Object.keys(data[0])
 
-                console.log(inputs)
-            } catch (err) {
-                console.log({error: err})
-            }
+    //             // How i want to set the inputs with data
+    //             for(const i=0; i < 1 ; i++) {
+    //                 console.log('hello');
+    //                 for(const i=0; i < 11; i++) {
+    //                     console.log(`${fields[i]} : ${values[i]}`)
+    //                 }
+    //             }
+
+    //         } catch (err) {
+    //             console.log({error: err})
+    //         }
+    //     }
+    //     getCardToUpdate()
+    //     // console.log(inputs)
+    // }, [])
+
+
+    const handleChange = e => {
+        const { name, value } = e.target;
+        setInputs(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    }
+
+    console.log(inputs)
+
+    const handleUpdate = async (event) => {
+        event.preventDefault()
+        const formData = {
+            isbn: inputs.isbn.input,
+            title: inputs.title,
+            desc: inputs.desc,
+            author: inputs.author,
+            genre: inputs.genre,
+            pbDate: inputs.pbDate,
+            nbPage: inputs.nbPage,
+            price: inputs.price,
+            bkInStck: inputs.bkInStck,
         }
-        getCardToUpdate()
-
-    }, [])
+        try {
+            const { data } = await axios ({
+                method: "PUT",
+                url: "/api/updatesheet",
+                data: formData
+            })
+            if (data.message) {
+                window.alert(data.message)
+                window.location.replace("/")
+            }
+        } catch (err) {
+            console.log({error: err})
+        }
+    }
 
     const [error0, setError0] = React.useState("")
-    // const handleChange = e => {
-    //     const { name, value } = e.target;
-    //     setInputs(prevState => ({
-    //         ...prevState,
-    //         [name]: value
-    //     }));
-    // }
-    // const handleSubmit = async (event) => {
-    //     event.preventDefault()
-    //     console.log("hello")
-    //     try {
-    //         const { data } = await axios({
-    //             method: "POST",
-    //             url: "/api/addsheet",
-    //             data: inputs
-    //         })
-    //         setError0("")
-    //         if (data.message) {
-    //             window.alert(data.message)
-    //             window.location.replace('/')
-    //         } else if (data.error === 0) {
-    //             setError0("You must log in to create a sheet !!")
-    //         } else if(data) {
-
-    //             //...working in progress, all inputs must behave this way without repeating this code each time
-    //             if(data.isbn) {
-    //                 setHelperText({...helperText, isbn: data.isbn.message})
-    //                 setError({...error, isbn: true})
-    //             } else {
-    //                 setHelperText({...helperText, isbn: null})
-    //                 setError({...error, isbn: false})
-    //             }
-    //         }        
-    //     } catch (err) {
-    //         console.log({error: err})
-    //     }
-    // }
     
     return (
 
@@ -159,7 +170,7 @@ const [inputs, setInputs] = React.useState({
                 </Typography>
             </Grid>
 
-            {/* <Grid container  rowGap={3} >
+            <Grid container  rowGap={3} >
                 <Grid container direction="row" justifyContent="space-between" alignItems="center">
                     <Grid >
                         <TextField
@@ -182,7 +193,8 @@ const [inputs, setInputs] = React.useState({
                             name="title"
                             defaultValue={inputs.title.input} 
                             error={inputs.title.error}
-                            helperText={inputs.title.helperText} 
+                            helperText={inputs.title.helperText}
+                            onChange={handleChange} 
                         />
                     </Grid>
                     <Grid >
@@ -194,7 +206,8 @@ const [inputs, setInputs] = React.useState({
                             name="author" 
                             defaultValue={inputs.author.input} 
                             error={inputs.author.error}
-                            helperText={inputs.author.helperText} 
+                            helperText={inputs.author.helperText}
+                            onChange={handleChange} 
                         />
                     </Grid>
                 </Grid>
@@ -209,7 +222,8 @@ const [inputs, setInputs] = React.useState({
                             name="genre"
                             defaultValue={inputs.genre.input}  
                             error={inputs.genre.error}
-                            helperText={inputs.genre.helperText} 
+                            helperText={inputs.genre.helperText}
+                            onChange={handleChange}  
                         />
                     </Grid>
                     <Grid >
@@ -221,7 +235,8 @@ const [inputs, setInputs] = React.useState({
                             name="nbPage"
                             defaultValue={inputs.nbPage.input} 
                             error={inputs.nbPage.error}
-                            helperText={inputs.nbPage.helperText}  
+                            helperText={inputs.nbPage.helperText}
+                            onChange={handleChange} 
                         />
                     </Grid>
                     <Grid >
@@ -232,9 +247,11 @@ const [inputs, setInputs] = React.useState({
                             id="standard-helperText"
                             label="Publication date"
                             name="pbDate"
+                            type="date"
                             defaultValue={inputs.pbDate.input} 
                             error={inputs.pbDate.error}
-                            helperText={inputs.pbDate.helperText}  
+                            helperText={inputs.pbDate.helperText}
+                            onChange={handleChange}  
                         />
                     </Grid>
                 </Grid>
@@ -249,7 +266,8 @@ const [inputs, setInputs] = React.useState({
                             name="price"
                             defaultValue={inputs.price.input} 
                             error={inputs.price.error} 
-                            helperText={inputs.price.helperText} 
+                            helperText={inputs.price.helperText}
+                            onChange={handleChange} 
                         />
                     </Grid>
                     <Grid >
@@ -261,7 +279,8 @@ const [inputs, setInputs] = React.useState({
                             name="bkInStck"
                             defaultValue={inputs.bkInStck.input} 
                             error={inputs.bkInStck.error}
-                            helperText={inputs.bkInStck.helperText}  
+                            helperText={inputs.bkInStck.helperText}
+                            onChange={handleChange}  
                         />
                     </Grid>
                 </Grid>
@@ -278,12 +297,13 @@ const [inputs, setInputs] = React.useState({
                     name="desc"
                     defaultValue={inputs.desc.input} 
                     error={inputs.desc.error}
-                    helperText={inputs.desc.helperText} 
+                    helperText={inputs.desc.helperText}
+                    onChange={handleChange} 
                 />
-            </Grid2> */}
+            </Grid2>
 
             <Grid item>
-                <Button  variant="contained" type="submit"> Update </Button>
+                <Button  variant="contained" type="submit" onClick={handleUpdate}> Update </Button>
             </Grid> 
             <Link href="/login" underline="hover" color="primary">
                 <Typography color="primary">{error0}</Typography>

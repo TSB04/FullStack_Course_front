@@ -106,7 +106,7 @@ const MyPopover = ({children}) => {
     const handlePrvlge = (event) => {
         // get the User privilege from session storage then update hasPrvlge
         const userPrvlge = sessionStorage.getItem("userPrvlge")
-        if(userPrvlge === true) {
+        if(userPrvlge) {
             setHasPrvlge(true)
         }
         // get the User Id from selected card
@@ -132,8 +132,8 @@ const MyPopover = ({children}) => {
         sessionStorage.removeItem("price")        
     }
 
-    const open = Boolean(anchorEl);
-    const id = open ? 'simple-popover' : undefined;
+    const open = Boolean(anchorEl)
+    const id = open ? 'simple-popover' : undefined
 
     return (
         <>
@@ -200,9 +200,11 @@ const MyPopover = ({children}) => {
                             }
                             {isOwner === true && 
                                 <Tooltip title="Delete">
-                                    <IconButton sx={myStyle.deleteButton}>
-                                        <DeleteForever/>
-                                    </IconButton>
+                                    <Link href="/deletesheet" backgroundColor="none">
+                                        <IconButton sx={myStyle.deleteButton}>
+                                            <DeleteForever/>
+                                        </IconButton>
+                                    </Link>
                                 </Tooltip>
                             }
                         </Grid>

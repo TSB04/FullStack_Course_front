@@ -21,10 +21,9 @@ const myStyle = {
 
 const Layout = ({ children }) => {
 
-		
-
+	const [isLogged, setIslogged] = React.useState(false)
 	const [userBar, setUserBar] = React.useState()
-	
+
 	return (
 		<>
 			<Grid container sx={myStyle.header}>
@@ -33,7 +32,11 @@ const Layout = ({ children }) => {
 			<Grid container sx={myStyle.globalContainer}>
 				<Grid item xs={1.5} sx={myStyle.aside} alignItems="center">
 					{typeof window !== "undefined" && window.location.pathname !== "/login" && window.location.pathname !== "/signup" && 
-						React.useEffect(()=> {setUserBar(<UserBar/>)}, [])
+						React.useEffect(()=> {
+							if(sessionStorage.length >= 3) {
+								setUserBar(<UserBar/>)
+							}
+						}, [])
 					}
 					{userBar}
 				</Grid>

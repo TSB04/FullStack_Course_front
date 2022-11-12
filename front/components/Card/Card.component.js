@@ -21,13 +21,13 @@ const myStyle = {
         overflow: "clip"
     }
 }
-const BookCard = ({title, desc, author, genre, nbPage, bkInStck, price, pbDate, userId, isbn}) => {
+const BookCard = ({title, desc, author, genre, nbPage, bkInStck, price, pbDate, userId, isbn, image}) => {
 
     return (
         <MyPopover>
-            <Card sx={myStyle.globalContainer} id="card" name="myCard1">
-                <Grid container  direction="row" justifyContent="space-between" name="myCard2">
-                    <Grid item xs={8} height="16vh" name="myCard3">
+            <Card sx={myStyle.globalContainer}>
+                <Grid container  direction="row" justifyContent="space-between">
+                    <Grid item xs={8} height="16vh" >
                         <CardContent sx={{ flex: '1 0 auto' }} name="myCardContentHead">
                             <Typography component="div" variant="h6" id="title" name="bookTitle">
                                 {title}
@@ -47,7 +47,7 @@ const BookCard = ({title, desc, author, genre, nbPage, bkInStck, price, pbDate, 
                     <Grid item xs={4}>
                         <CardMedia
                         component="img"
-                        image="/icon2.jpeg"
+                        image={image}
                         alt="Live from space album cover"
                         style={myStyle.media}
                         />

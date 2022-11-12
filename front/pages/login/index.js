@@ -42,6 +42,7 @@ function Login () {
                 url: "/api/login",
                 data: formData
             })
+            console.log(data)
             if (data) {
                 if (data.message) {
                     const cookie = new Cookies
@@ -49,9 +50,12 @@ function Login () {
                     sessionStorage.setItem("jwt", data.token)
                     sessionStorage.setItem("fname", data.fName)
                     sessionStorage.setItem("lname", data.lName)
-                    sessionStorage.setItem("userPrvlge", data.isAdmin)
+
                     sessionStorage.setItem("userId", data.userId)
-                    window.alert("welcome "+data.fName+""+data.lName)
+                    if(data.isAdmin === true) {
+                        sessionStorage.setItem("userPrvlge", data.isAdmin)
+                    }
+                    window.alert(data.message)
                     window.location.replace('/')
                 } else if (!data.email && data.password) {
                     setHandleInputs(prevState => ({
@@ -120,7 +124,7 @@ function Login () {
                     Log in
                 </Typography>
             </Grid>
-            <Grid item width="80%">
+            <Grid item>
                 <TextField
                     fullWidth
                     required
@@ -133,7 +137,7 @@ function Login () {
                     onChange={ e => setEmail(e.target.value)}
                 />
             </Grid>
-            <Grid item width="80%">
+            <Grid item>
                 <TextField
                     fullWidth
                     required

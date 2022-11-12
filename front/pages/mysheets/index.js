@@ -12,7 +12,7 @@ import Cookies from "universal-cookie"
         position: "absolute",
         left: "13.3%",
         width: "86.7%",
-        maxHeight: "92vh",
+        maxHeight: "90vh",
         overflow: "auto",
     }
 

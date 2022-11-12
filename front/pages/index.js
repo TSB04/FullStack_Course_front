@@ -8,13 +8,13 @@ const myStyle = {
     position: "absolute",
     left: "13.3%",
     width: "86.7%",
-    maxHeight: "92vh",
+    maxHeight: "90vh",
     overflow: "auto",
 }
 
     
 function Home () {
-    let [ sheets, setSheets ] = React.useState(null)
+    const [ sheets, setSheets ] = React.useState(null)
 
     React.useEffect(() => {
         fetch('http://localhost:4898/api/books/all')
@@ -26,7 +26,7 @@ function Home () {
         <Box style={myStyle}>
             {sheets && sheets.map(row => <BookCard
                 key={row.isbn} userId={row.userId} isbn={row.isbn} title={row.title} author={row.author}
-                genre={row.genre} pbDate={moment(row.pbDate).format('LL')} desc={row.desc} 
+                genre={row.genre} pbDate={moment(row.pbDate).format('LL')} desc={row.desc} image="/icon2.jpeg"
                 nbPage={row.nbPage}bkInStck={row.bkInStck} price={row.price.$numberDecimal}
             />)}
         </Box>        

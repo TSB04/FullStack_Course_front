@@ -71,6 +71,7 @@ function AddSheet () {
                 data: inputs
             })
             setError0("")
+            console.log(data)
             if (data.message) {
                 window.alert(data.message)
                 window.location.replace('/')
